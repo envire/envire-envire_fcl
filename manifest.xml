@@ -1,20 +1,15 @@
 <package>
   <description brief="FCL interface with Envire">
-  Provides an interface for collision checks of Envire types using the Flexible Collision Library (FCL).
+  Provides an interface for collision checks of Envire types using the Flexible Collision Library (FCL)
   </description>
   <author>Envire Team/ric-team8@dfki.de</author>
   <license></license>
   <url>http://</url>
   <logo>http://</logo>
   <depend package="base/cmake" />
-  <!--
-   To add any dependencies use the depend tag
-  <depend package="dummy-dependency-0" />
-	...
-  <depend package="dummy-dependency-n-1" />
-  <depend package="dummy-dependency-n" />
-  -->
+  <depend package="base/types" />
   <depend package="envire/envire_maps" />
   <depend package="envire/envire_octomap" />
+  <depend package="base/boost_serialization" />
   <depend package="envire/fcl" />
 </package>
