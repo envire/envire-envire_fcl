@@ -1,8 +1,11 @@
-#include "fcl-extern.hpp"
+#include <fcl/fcl.h>
+
+// Declare some templates as external, so they don't have to be re-compiled every time
+// FCL itself does this only for double types, but float is better for MLS interaction
 
 namespace fcl {
-//==============================================================================
-template
+
+extern template
 std::size_t collide(
     const CollisionObject<float>* o1,
     const CollisionObject<float>* o2,
@@ -10,7 +13,7 @@ std::size_t collide(
     CollisionResult<float>& result);
 
 //==============================================================================
-template
+extern template
 std::size_t collide(
     const CollisionGeometry<float>* o1,
     const Transform3<float>& tf1,
@@ -18,4 +21,5 @@ std::size_t collide(
     const Transform3<float>& tf2,
     const CollisionRequest<float>& request,
     CollisionResult<float>& result);
+
 }  // namespace fcl

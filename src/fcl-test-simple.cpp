@@ -1,7 +1,6 @@
 //#define EIGEN_INITIALIZE_MATRICES_BY_NAN 1
 
-#include <fcl/fcl.h>
-#include <envire_fcl/mls/mls.h>
+#include "fcl-extern.hpp"
 
 #include <iostream>
 #include <boost/archive/polymorphic_binary_iarchive.hpp>
@@ -83,10 +82,9 @@ int main(int argc, char **argv) {
 
     typedef float S;
     typedef fcl::AABB<S> BV;
-    std::shared_ptr<fcl::Spheref> geo1(new fcl::Spheref(20));
 
 
-    fcl::CollisionRequestf request(100, true, 100, true);
+    fcl::CollisionRequestf request(10, true, 10, true);
     fcl::CollisionResultf result;
 
 
@@ -95,23 +93,31 @@ int main(int argc, char **argv) {
 
     typedef Eigen::Vector3f Vec3;
     m1.beginModel(4, 4); // assume that each cell creates one 4-gon on average
-    for(float f=0.0f; f<100; f+=1.0)
+    for(float f=-1; f<11.0; f+=2.0)
     {
-        std::vector<Vec3> points = {Vec3(0,0,f), Vec3(0,1,f), Vec3(1,0,f), Vec3(1,1,f)};
+        std::vector<Vec3> points = {Vec3(-1,-1,f-1), Vec3(-1,1,f-1), Vec3(1,-1,f+1.0f), Vec3(1,1,f+1.0f)};
         std::vector<fcl::Triangle> triags = {fcl::Triangle(0,1,2), fcl::Triangle(0,2,3)};
         m1.addSubModel(points, triags);
     }
     m1.endModel();
 
-    fcl::collide(&m1, fcl::Transform3<S>::Identity(), geo1.get(), fcl::Transform3<S>::Identity(), request, result);
-
-
-    std::cout << result.isCollision();
-    for(size_t i=0; i< result.numContacts(); ++i)
+    fcl::Transform3<S> sphere2world;
+    sphere2world.setIdentity();
+    sphere2world.translation().z()=0.1;
+    for(float r=0.24; r<2.1; r+=0.02)
     {
-        const auto & cont = result.getContact(i);
-        std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth;
+        std::shared_ptr<fcl::Spheref> geo1(new fcl::Spheref(r));
+
+        fcl::collide(&m1, fcl::Transform3<S>::Identity(), geo1.get(), sphere2world, request, result);
+
+
+        std::cout << "r= " << r << ": isCollsion: " << result.isCollision();
+        for(size_t i=0; i< result.numContacts(); ++i)
+        {
+            const auto & cont = result.getContact(i);
+            std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth;
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
 
 }

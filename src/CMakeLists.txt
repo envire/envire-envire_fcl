@@ -1,11 +1,8 @@
 rock_library(envire_fcl
     SOURCES
-      Collision.cpp
       fcl-impl.cpp
     HEADERS
-      Collision.hpp
-      mls/mls.h
-      mls/mls-inl.h
+      fcl-extern.hpp
     DEPS_PKGCONFIG
         envire_maps
         fcl
