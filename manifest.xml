@@ -10,6 +10,7 @@
   <depend package="base/types" />
   <depend package="envire/envire_maps" />
   <depend package="envire/envire_octomap" />
+  <depend package="envire/envire_visualizer" />
   <depend package="base/boost_serialization" />
   <depend package="envire/fcl" />
 </package>
