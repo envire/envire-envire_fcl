@@ -32,6 +32,7 @@ void collide_mls(
     static fcl::Triangle triags[4];
     for(int i=0; i<4; ++i) triags[i].set(0, i+1, i+2);
     fcl::BVHModel<BV> m1;  // BVHModel of local MLS region
+    // TODO check out if different a bv_splitter makes a difference:
     // m1.bv_splitter.reset(new fcl::detail::BVSplitter<BV>(fcl::detail::SPLIT_METHOD_MEDIAN);
     //estimate number of cells:
     size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().cast<S>())).prod();
@@ -41,14 +42,8 @@ void collide_mls(
     Eigen::AlignedBox3d bounding(bv2.min_.template cast<double>(), bv2.max_.template cast<double>());
     mls.intersectAABB_callback(bounding,
             [&m1, &cell_size](maps::grid::Index idx, const P& p) {
-//        std::cout << "Intersect at " << idx.transpose() << " with p from " << p.getMin() << " to " << p.getMax() << "\t";
         std::vector<Eigen::Vector3f> points;
         maps::grid::getPolygon(points, p, idx, cell_size);
-//        std::cout << "Polygon:";
-//        for(auto pt : points) std::cout << " [" << pt.transpose() << "]";
-//        std::cout << std::endl;
-//        if(points.size() < 3) return;
-//        if(points.size() > 6) std::cout << "WHAT? " << p.getNormal().transpose() << "\n\n";
         assert(points.size()>=3 && points.size() <=6);
         m1.addSubModel(points, TriVect(triags, triags+(points.size()-2)));
     });
@@ -58,10 +53,10 @@ void collide_mls(
         return;
     }
     m1.endModel();
+    std::cout << "Number of triangles: " << m1.num_tris << "\n";
+    // perform actual fcl-collision test:
     fcl::collide(&m1, world2map.inverse(Eigen::Isometry), o2, tf2, request, result);
 }
-
-
 
 // Do not recompile this function every time:
 

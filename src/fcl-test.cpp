@@ -1,5 +1,3 @@
-//#define EIGEN_INITIALIZE_MATRICES_BY_NAN 1
-
 #include "Collision.hpp"
 
 #include <iostream>
@@ -33,8 +31,9 @@ public:
         fcl::Transform3f trafo = graph_.getEdgeProperty(e.edge).transform.getTransform().cast<float>();
         fcl::CollisionRequestf request(10, true, 10, true);
         fcl::CollisionResultf result;
-        fcl::Spheref sphere(.25);
-        fcl::collide_mls(mls_, trafo, &sphere, request, result);
+        //fcl::Spheref sphere(.25);
+        fcl::Boxf box(1.0, 1.0, 1.0);
+        fcl::collide_mls(mls_, trafo, &box, request, result);
         std::cout << "\nisCollision()==" << result.isCollision();
         for(size_t i=0; i< result.numContacts(); ++i)
         {
@@ -59,20 +58,15 @@ int main(int argc, char **argv) {
 
     envire::core::Item<MLSMapS>::Ptr mlsItem = boost::dynamic_pointer_cast<envire::core::Item<MLSMapS>>(item);
 
-
-
     std::ifstream fileIn(argv[1]);
-
-
 
     // deserialize from file stream
     boost::archive::binary_iarchive mlsIn(fileIn);
-//    std::shared_ptr<MLSMapS> mlsSloped(new MLSMapS);
-//    envire::core::Item<MLSMapS>::Ptr mlsItem(new envire::core::Item<MLSMapS>());
 
     mlsIn >> mlsItem->getData();
-//    mlsIn >> *mlsSloped;
 
+#if 0
+    // hard-coded testing:
     std::shared_ptr<fcl::Spheref> geo1(new fcl::Spheref(.25));
 
     fcl::CollisionRequestf request(10, true, 10, true);
@@ -86,7 +80,6 @@ int main(int argc, char **argv) {
         result.clear(); // Must clear result before calling fcl::collide functions!!!
         trafo.translation().z() = z;
         fcl::collide_mls(mlsItem->getData(), trafo, geo1.get(), request, result);
-        //    fcl::collide(&o1, &o2, request, result);
         std::cout << "With z = " << z << ", isCollision()==" << result.isCollision();
         for(size_t i=0; i< result.numContacts(); ++i)
         {
@@ -96,7 +89,7 @@ int main(int argc, char **argv) {
         std::cout << std::endl;
 
     }
-
+#endif
 
     QApplication app(argc, argv);
     EnvireVisualizerWindow window;
@@ -111,43 +104,5 @@ int main(int argc, char **argv) {
 
     graph->subscribe(new EdgeCallBack(*graph, mlsItem->getData()));
 
-//    std::thread t([&graph](){
-//          while(true)
-//          {
-//          std::this_thread::sleep_for(std::chrono::milliseconds(300));
-//          envire::core::Transform ab = graph->getTransform("A", "B");
-////          ab.transform.translation.x() += 0.1;
-////          std::cout << ab.transform.translation.x() << std::endl;
-////          graph->updateTransform("A", "B", ab);
-//          }
-//      });
-
     app.exec();
-
-
-
-#if 0
-    QtThreadedWidget<vizkit3d::Vizkit3DWidget> app;
-    app.start();
-    //QApplication app(argc, argv);
-    vizkit3d::Vizkit3DWidget *widget = app.getWidget();
-    widget->setCameraManipulator(vizkit3d::ORBIT_MANIPULATOR);
-
-    vizkit3d::MLSMapVisualization mlsViz;
-    widget->addPlugin(&mlsViz);
-    mlsViz.updateData(*mlsSloped);
-    mlsViz.setPluginEnabled(!false);
-    mlsViz.setShowPatchExtents(false);
-
-    widget->show();
-
-
-
-
-    while(app.isRunning() && (!usleep(1000)))
-    {
-        //
-    }
-
-#endif
 }
