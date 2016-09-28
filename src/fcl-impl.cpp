@@ -1,6 +1,16 @@
 #include "fcl-extern.hpp"
 
 namespace fcl {
+
+template
+class CollisionGeometry<float>;
+template
+class CollisionObject<float>;
+template
+struct CollisionRequest<float>;
+template
+struct CollisionResult<float>;
+
 //==============================================================================
 template
 std::size_t collide(
