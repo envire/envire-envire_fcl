@@ -46,6 +46,8 @@ void collide_mls(
         maps::grid::getPolygon(points, p, idx, cell_size);
         assert(points.size()>=3 && points.size() <=6);
         m1.addSubModel(points, TriVect(triags, triags+(points.size()-2)));
+        // return false, because we need to add every possible intersection:
+        return false;
     });
     if(m1.num_vertices==0)
     {
