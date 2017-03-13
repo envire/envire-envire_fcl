@@ -4,10 +4,6 @@ FCL interface with Envire
 
 Provides an interface for collision checks of Envire types using the Flexible Collision Library (FCL).
 
-License
--------
-dummy-license
-
 Installation
 ------------
 The easiest way to build and install this package is to use Rock's build system.
