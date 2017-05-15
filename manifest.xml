@@ -13,4 +13,5 @@
   <depend package="envire/envire_visualizer" />
   <depend package="base/boost_serialization" />
   <depend package="envire/fcl" />
+  <depend package="tools/smurf" />
 </package>

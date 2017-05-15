@@ -11,4 +11,12 @@ template void collide_mls(
         CollisionResult<float>& result
 );
 
+template void collide_collidable(
+        const smurf::Collidable& collidable,
+        const Transform3<float>& tf2,
+        const fcl::Spheref* o2,
+        const CollisionRequest<float>& request,
+        CollisionResult<float>& result
+);
+
 }  // namespace fcl
