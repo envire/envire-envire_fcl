@@ -5,6 +5,7 @@
  * Distributed under terms of the MIT license.
  */
 
+#include <QObject>
 #include "Collision.hpp"
 
 #include <iostream>
@@ -23,7 +24,10 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
+#include <envire_core/graph/GraphViz.hpp>
+
 #include <Eigen/Geometry>
+
 using namespace envire::viz;
 
 struct EdgeCallBack : public envire::core::GraphEventDispatcher
@@ -58,21 +62,22 @@ int main(int argc, char **argv) {
     const std::string path="./smurf/just_a_box/smurf/just_a_box.smurf";
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
-    //envire::core::GraphViz viz;
+    envire::core::GraphViz viz;
 
     envire::core::Transform iniPose;
-    std::shared_ptr<envire::core::EnvireGraph> transformGraph(new envire::core::EnvireGraph) ;
+    std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph) ;
     iniPose.transform.orientation = base::Quaterniond::Identity();
     iniPose.transform.translation << 1.0, 1.0, 1.0;
-    envire::smurf::GraphLoader graphLoader(transformGraph, iniPose);
+    envire::smurf::GraphLoader graphLoader(graph, iniPose);
     envire::core::FrameId center = "center";
-    transformGraph->addFrame(center);
-    graphLoader.loadStructure(transformGraph->getVertex(center), *robot);
+    graph->addFrame(center);
+    graphLoader.loadStructure(graph->getVertex(center), *robot);
     
     int nextGroupId = 0;
     graphLoader.loadFrames(nextGroupId, *robot);
     graphLoader.loadCollidables(*robot);
-    //viz.write(*(graphLoader.getGraph()), "loadInertialsAndCollidables_Test.dot");
+    //graphLoader.loadVisuals(*robot);
+    viz.write(*(graphLoader.getGraph()), "fcl-collidable-test.dot");
     
     
     //plugin_manager::PluginLoader* loader = plugin_manager::PluginLoader::getInstance();
@@ -116,18 +121,18 @@ int main(int argc, char **argv) {
     }
 #endif
 
-    //QApplication app(argc, argv);
-    //EnvireVisualizerWindow window;
+    QApplication app(argc, argv);
+    EnvireVisualizerWindow window;
     //std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph);
     //graph->addFrame("A");
     //graph->addFrame("B");
     //graph->addItemToFrame("A", mlsItem);
     //envire::core::Transform ab(base::Position(1, 1, 1), Eigen::Quaterniond::Identity());
     //graph->addTransform("A", "B", ab);
-    //window.displayGraph(graph, "A");
-    //window.show();
+    window.displayGraph(graph, "center");
+    window.show();
 
     //graph->subscribe(new EdgeCallBack(*graph, mlsItem->getData()));
 
-    //app.exec();
+    app.exec();
 }
