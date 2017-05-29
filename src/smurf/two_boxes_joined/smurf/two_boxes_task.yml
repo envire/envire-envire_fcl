@@ -1,0 +1,5 @@
+joint_tasks:
+- driver: unnamed
+  port: box2
+  name:  box2
+  provider: robot_frames

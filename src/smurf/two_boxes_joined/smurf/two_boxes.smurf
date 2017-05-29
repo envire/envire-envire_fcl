@@ -1,0 +1,8 @@
+# main SMURF file of model "spaceclimber"
+# created with Phobos 0.6 - https://github.com/rock-simulation/phobos
+
+SMURF version: 0.6
+modelname: spaceclimber
+date: '20150617_17:34'
+files:
+- ../urdf/two_boxes.urdf

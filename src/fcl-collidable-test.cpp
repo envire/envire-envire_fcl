@@ -28,6 +28,9 @@
 
 #include <Eigen/Geometry>
 
+#define CENTER_FRAME_NAME std::string("center")
+#define MLS_FRAME_NAME std::string("MLS Frame")
+
 using namespace envire::viz;
 
 struct EdgeCallBack : public envire::core::GraphEventDispatcher
@@ -59,7 +62,10 @@ public:
 int main(int argc, char **argv) {
 
     // Use smurf_loader to load an smurf file
-    const std::string path="./smurf/just_a_box/smurf/just_a_box.smurf";
+    //const std::string path="./smurf/just_a_box/smurf/just_a_box.smurf";
+    //const std::string path="./smurf/two_boxes_joined/smurf/two_boxes.smurf";
+    const std::string path="./smurf/two_boxes_joined/smurf/two_spheres.smurf";
+    //const std::string path="./smurf/asguard_v4/smurf/asguard_v4.smurf";
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
     envire::core::GraphViz viz;
@@ -69,7 +75,7 @@ int main(int argc, char **argv) {
     iniPose.transform.orientation = base::Quaterniond::Identity();
     iniPose.transform.translation << 1.0, 1.0, 1.0;
     envire::smurf::GraphLoader graphLoader(graph, iniPose);
-    envire::core::FrameId center = "center";
+    envire::core::FrameId center = CENTER_FRAME_NAME;
     graph->addFrame(center);
     graphLoader.loadStructure(graph->getVertex(center), *robot);
     
@@ -79,21 +85,33 @@ int main(int argc, char **argv) {
     //graphLoader.loadVisuals(*robot);
     viz.write(*(graphLoader.getGraph()), "fcl-collidable-test.dot");
     
-    
-    //plugin_manager::PluginLoader* loader = plugin_manager::PluginLoader::getInstance();
-    //envire::core::ItemBase::Ptr item;
+    // Load the mls
+    if(argc < 3)
+    {
+        std::cout << "Usage:\n" << argv[0] << " mlsFileName " << "sloped|kalman \n";
+        return 0;
+    }
 
+    plugin_manager::PluginLoader* loader = plugin_manager::PluginLoader::getInstance();
+    envire::core::ItemBase::Ptr item;
+    std::string mapType = argv[2];
+    if (mapType == "sloped")
+    {
+        loader->createInstance("envire::core::Item<maps::grid::MLSMapSloped>", item);
+    }
+    else
+    {
+        std::cout << "Only deserialization of sloped mls is supported";
+    }
 
-    //loader->createInstance("envire::core::Item<smurf::Collidable>", item);
+    envire::core::Item<MLSMapS>::Ptr mlsItem = boost::dynamic_pointer_cast<envire::core::Item<MLSMapS>>(item);
 
-    //envire::core::Item<MLSMapS>::Ptr mlsItem = boost::dynamic_pointer_cast<envire::core::Item<MLSMapS>>(item);
+    std::ifstream fileIn(argv[1]);
 
-    //std::ifstream fileIn(argv[1]);
+    // deserialize from file stream
+    boost::archive::binary_iarchive mlsIn(fileIn);
 
-    //// deserialize from file stream
-    //boost::archive::binary_iarchive mlsIn(fileIn);
-
-    //mlsIn >> mlsItem->getData();
+    mlsIn >> mlsItem->getData();
 
 #if 0
     // hard-coded testing:
@@ -125,11 +143,12 @@ int main(int argc, char **argv) {
     EnvireVisualizerWindow window;
     //std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph);
     //graph->addFrame("A");
-    //graph->addFrame("B");
-    //graph->addItemToFrame("A", mlsItem);
-    //envire::core::Transform ab(base::Position(1, 1, 1), Eigen::Quaterniond::Identity());
-    //graph->addTransform("A", "B", ab);
-    window.displayGraph(graph, "center");
+    graph->addFrame(MLS_FRAME_NAME);
+    graph->addItemToFrame(MLS_FRAME_NAME, mlsItem);
+    envire::core::Transform mlsCenter(base::Position(1, 1, 1), Eigen::Quaterniond::Identity());
+    graph->addTransform(MLS_FRAME_NAME, CENTER_FRAME_NAME, mlsCenter);
+    QString qCentreName = QString::fromStdString(CENTER_FRAME_NAME);
+    window.displayGraph(graph, qCentreName);
     window.show();
 
     //graph->subscribe(new EdgeCallBack(*graph, mlsItem->getData()));
