@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- created with Phobos 0.6 -->
+  <robot name="spaceclimber">
+
+    <link name="root">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="112.541"/>
+        <inertia ixx="0.037663" ixy="-6e-06" ixz="-1e-06" iyy="0.015691" iyz="-5e-06" izz="0.035183"/>
+        </inertial>
+      <visual name="visual_root">
+        <origin xyz="0. 0. 0.0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.5"/>
+        </geometry>
+        <material name="green"/>
+      </visual>
+      <collision name="collision_root">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.5"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <material name="green">
+      <color rgba="0.35884 0.343867 0.208525 1.0"/>
+    </material>
+
+    <material name="schwarz">
+      <color rgba="0.00637 0.00637 0.00637 1.0"/>
+    </material>
+
+    <material name="silber">
+      <color rgba="0.422167 0.422167 0.422167 1.0"/>
+    </material>
+
+  </robot>

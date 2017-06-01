@@ -30,6 +30,8 @@
 
 #define CENTER_FRAME_NAME std::string("center")
 #define MLS_FRAME_NAME std::string("MLS Frame")
+#define SMURF_COLLIDABLE_SPHERE_FRAME_NAME std::string("root")
+#define SMURF_COLLIDABLE_BOX_FRAME_NAME std::string("root")
 
 using namespace envire::viz;
 
@@ -37,17 +39,31 @@ struct EdgeCallBack : public envire::core::GraphEventDispatcher
 {
     const envire::core::EnvireGraph &graph_;
     const smurf::Collidable& collidable_;
+    const MLSMapS& mls_;
+
 public:
-    EdgeCallBack(const envire::core::EnvireGraph& graph, const smurf::Collidable & collidable) : graph_(graph), collidable_(collidable) {}
+    EdgeCallBack(const envire::core::EnvireGraph& graph, const smurf::Collidable & collidable, const MLSMapS & mls) : graph_(graph), collidable_(collidable), mls_(mls) {}
     void edgeModified(const envire::core::EdgeModifiedEvent& e) {
         std::cout << "Edge modified. Trafo=\n";
         std::cout << graph_.getEdgeProperty(e.edge).transform.getTransform().matrix();
         fcl::Transform3f trafo = graph_.getEdgeProperty(e.edge).transform.getTransform().cast<float>();
         fcl::CollisionRequestf request(10, true, 10, true);
         fcl::CollisionResultf result;
-        //fcl::Spheref sphere(.25);
-        fcl::Boxf box(1.0, 1.0, 1.0);
-        fcl::collide_collidable(collidable_, trafo, &box, request, result);
+        urdf::Collision collision = collidable_.getCollision();
+
+        //boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
+        //fcl::Spheref sphere(sphereUrdf->radius);
+
+        boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
+        fcl::Boxf box(boxUrdf->dim.x, boxUrdf->dim.y, boxUrdf->dim.z);
+        //fcl::Boxf box(1.0, 1.0, 1.0);
+
+        //fcl::Spheref sphere(.25); // Build an sphere out of the collidable
+        //fcl::Boxf box(1.0, 1.0, 1.0);
+
+        fcl::collide_mls(mls_, trafo, &box, request, result);
+        //fcl::collide_mls(mls_, trafo, &sphere, request, result);
+
         std::cout << "\nisCollision()==" << result.isCollision();
         for(size_t i=0; i< result.numContacts(); ++i)
         {
@@ -62,12 +78,14 @@ public:
 int main(int argc, char **argv) {
 
     // Use smurf_loader to load an smurf file
-    //const std::string path="./smurf/just_a_box/smurf/just_a_box.smurf";
+    const std::string path="./smurf/just_a_box/smurf/just_a_box.smurf";
     //const std::string path="./smurf/two_boxes_joined/smurf/two_boxes.smurf";
-    const std::string path="./smurf/two_boxes_joined/smurf/two_spheres.smurf";
+    //const std::string path="./smurf/two_boxes_joined/smurf/two_spheres.smurf";
+    //const std::string path="./smurf/two_boxes_joined/smurf/one_sphere.smurf";
     //const std::string path="./smurf/asguard_v4/smurf/asguard_v4.smurf";
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
+    
     envire::core::GraphViz viz;
 
     envire::core::Transform iniPose;
@@ -151,7 +169,19 @@ int main(int argc, char **argv) {
     window.displayGraph(graph, qCentreName);
     window.show();
 
-    //graph->subscribe(new EdgeCallBack(*graph, mlsItem->getData()));
+
+    // Get the collidable that we want to check collisions against
+    using CollisionType = smurf::Collidable;
+    using CollisionItem = envire::core::Item<CollisionType>;
+    using IterCollItem = envire::core::EnvireGraph::ItemIterator<CollisionItem>;
+    //envire::core::FrameId colFrame = SMURF_COLLIDABLE_SPHERE_FRAME_NAME;
+    envire::core::FrameId colFrame = SMURF_COLLIDABLE_BOX_FRAME_NAME;
+    IterCollItem itCols, endCols;
+    std::tie(itCols, endCols) = graph->getItems<CollisionItem>(colFrame);
+    if(itCols != endCols)
+    {
+        graph->subscribe(new EdgeCallBack(*graph, itCols->getData(), mlsItem->getData()));
+    }
 
     app.exec();
 }
