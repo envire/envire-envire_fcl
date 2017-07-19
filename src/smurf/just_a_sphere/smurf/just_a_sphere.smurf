@@ -1,0 +1,5 @@
+SMURF version: 0.6
+modelname: just_a_sphere
+date: '20150617_17:34'
+files:
+- ../urdf/just_a_sphere.urdf
