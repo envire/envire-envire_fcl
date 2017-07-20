@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+  <robot name="multiple_objects">
+
+    <link name="box">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="112.541"/>
+        <inertia ixx="0.037663" ixy="-6e-06" ixz="-1e-06" iyy="0.015691" iyz="-5e-06" izz="0.035183"/>
+        </inertial>
+      <visual name="visual_box">
+        <origin xyz="0. 0. 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="green"/>
+      </visual>
+      <collision name="collision_box">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="1.0 1.0 1.0"/>
+        </geometry>
+      </collision>
+    </link>
+    
+    <!--<link name="sphere">
+      <inertial>
+        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <mass value="1.121"/>
+        <inertia ixx="0.004046" ixy="0.000314" ixz="5.7e-05" iyy="0.002621" iyz="-4.8e-05" izz="0.004502"/>
+      </inertial>
+      <visual name="visual_sphere">
+        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.5"/>
+        </geometry>
+        <material name="schwarz"/>
+      </visual>
+      <collision name="collision_sphere">
+        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="1.0"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="box2sphere" type="fixed">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <parent link="box"/>
+      <child link="sphere"/>
+      <axis xyz="0.0 1.0 0"/>
+      <limit effort="1000" lower="-0.785398" upper="0.785398" velocity="6.28"/>
+    </joint>-->
+
+    <material name="green">
+      <color rgba="0.35884 0.343867 0.208525 1.0"/>
+    </material>
+
+    <material name="schwarz">
+      <color rgba="0.00637 0.00637 0.00637 1.0"/>
+    </material>
+
+    <material name="silber">
+      <color rgba="0.422167 0.422167 0.422167 1.0"/>
+    </material>
+
+  </robot>
