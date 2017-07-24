@@ -22,34 +22,34 @@
       </collision>
     </link>
     
-    <!--<link name="sphere">
+    <link name="sphere">
       <inertial>
-        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <mass value="1.121"/>
         <inertia ixx="0.004046" ixy="0.000314" ixz="5.7e-05" iyy="0.002621" iyz="-4.8e-05" izz="0.004502"/>
       </inertial>
       <visual name="visual_sphere">
-        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
           <sphere radius="0.5"/>
         </geometry>
         <material name="schwarz"/>
       </visual>
       <collision name="collision_sphere">
-        <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-          <sphere radius="1.0"/>
+          <sphere radius="0.5"/>
         </geometry>
       </collision>
     </link>
 
     <joint name="box2sphere" type="fixed">
-      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <origin xyz="3.0 3.0 3.0" rpy="0 0 0"/>
       <parent link="box"/>
       <child link="sphere"/>
-      <axis xyz="0.0 1.0 0"/>
+      <axis xyz="0.0 0.0 0"/>
       <limit effort="1000" lower="-0.785398" upper="0.785398" velocity="6.28"/>
-    </joint>-->
+    </joint>
 
     <material name="green">
       <color rgba="0.35884 0.343867 0.208525 1.0"/>
