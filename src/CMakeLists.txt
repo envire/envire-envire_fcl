@@ -57,6 +57,17 @@ rock_executable(fcl_collidable_test_multiple_objects fcl-collidable-test-multipl
          envire_smurf
 )
 
+rock_executable(fcl_collidable_test_robot fcl-collidable-test-robot.cpp
+   DEPS envire_fcl
+   DEPS_PKGCONFIG
+       octomap boost_serialization
+         maps-viz base-viz
+         envire_core
+         envire_visualizer
+         envire_maps
+         envire_smurf
+)
+
 file(COPY smurf DESTINATION ./)
 
 rock_executable(fcl_test_simple fcl-test-simple.cpp
