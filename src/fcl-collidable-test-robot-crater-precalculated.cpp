@@ -36,6 +36,8 @@
 #define DUMPED_MLS_FRAME_NAME std::string("mls_map")
 #define TEST_MLS_PATH std::string("/simulation/mars/plugins/envire_mls/testMlsData/crater_simulation_mls.graph")
 
+#define DEBUG 1
+
 using namespace envire::viz;
 using CollisionType = smurf::Collidable;
 using CollisionItem = envire::core::Item<CollisionType>;
@@ -62,13 +64,17 @@ public:
         {
             itCols = graph_.getItem<CollisionItem>(colFrames_[frameIndex]); 
             std::string output;
+#ifdef DEBUG
             std::cout << "Collision related to frame " << colFrames_[frameIndex] << std::endl;
+#endif
             collidable = itCols->getData();
             // Transformation must be from the mls frame to the colision object frame
             envire::core::Transform tfColCen = graph_.getTransform(MLS_FRAME_NAME, colFrames_[frameIndex]);
             fcl::Transform3f trafo = tfColCen.transform.getTransform().cast<float>();
+#ifdef DEBUG
             std::cout << "Edge modified. Trafo=\n" << std::endl;
             std::cout << tfColCen.transform.getTransform().matrix() << std::endl;
+#endif
             fcl::CollisionRequestf request(10, true, 10, true);
             fcl::CollisionResultf result;
             urdf::Collision collision = collidable.getCollision();
@@ -76,7 +82,9 @@ public:
             switch (collision.geometry->type){
                 case urdf::Geometry::SPHERE:
                     {
+#ifdef DEBUG
                         std::cout << "Collision with a sphere" << std::endl;
+#endif
                         boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
                         fcl::Spheref sphere(sphereUrdf->radius);
                         fcl::collide_mls(mls_, trafo, &sphere, request, result);
@@ -84,31 +92,43 @@ public:
                     }
                 case urdf::Geometry::BOX:
                     {
+#ifdef DEBUG
                         std::cout << "Collision with a box" << std::endl;
+#endif
                         boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
                         fcl::Boxf box(boxUrdf->dim.x, boxUrdf->dim.y, boxUrdf->dim.z);
                         fcl::collide_mls(mls_, trafo, &box, request, result);
                         break;
                     }
                 default:
+#ifdef DEBUG
                     std::cout << "Collision with the selected geometry type not implemented" << std::endl;
+#endif
                     collisionComputed = false;
             }
             if (collisionComputed)
             {
+#ifdef DEBUG
                 std::cout << "\nisCollision()==" << result.isCollision();
+#endif
                 for(size_t i=0; i< result.numContacts(); ++i)
                 {
                     const auto & cont = result.getContact(i);
+                    std::cout << "Collision detected related to frame " << colFrames_[frameIndex] << std::endl;
                     std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth;
                 }
+#ifdef DEBUG
                 std::cout << std::endl;
                 if (result.isCollision())
                 {
                     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
                 }
+#endif
             }
         }
+#ifdef DEBUG
+        std::cout << "EDGE CALLBACK FINISHED" << std::endl;
+#endif
     }
 };
 
@@ -140,7 +160,6 @@ int main(int argc, char **argv) {
     // Load the mls
     std::string mlsPath = std::getenv(ENV_AUTOPROJ_ROOT) + TEST_MLS_PATH;
     std::cout << "[EnvireFcl::testRobotCraterPrecalculated] Mls to test with: " << mlsPath << std::endl; 
-
 
     envire::core::EnvireGraph auxMlsGraph;
     auxMlsGraph.loadFromFile(mlsPath);
@@ -184,61 +203,4 @@ int main(int argc, char **argv) {
     graph->subscribe(callBack);
     app.exec();
 
-    /*
-    if(argc < 3)
-    {
-        std::cout << "Usage:\n" << argv[0] << " mlsFileName " << "sloped|kalman \n";
-        return 0;
-    }
-
-    plugin_manager::PluginLoader* loader = plugin_manager::PluginLoader::getInstance();
-    envire::core::ItemBase::Ptr item;
-    std::string mapType = argv[2];
-    if (mapType == "sloped")
-    {
-        //loader->createInstance("envire::core::Item<maps::grid::MLSMapSloped>", item);
-        loader->createInstance("envire::core::Item<maps::grid::MLSMapPrecalculated>", item);
-        envire::core::Item<MLSMapP>::Ptr mlsItem = boost::dynamic_pointer_cast<envire::core::Item<MLSMapP>>(item);
-        std::ifstream fileIn(argv[1]);
-        // deserialize from file stream
-        boost::archive::binary_iarchive mlsIn(fileIn);
-        maps::grid::MLSMapSloped mlsSloped;
-        mlsIn >> mlsSloped;
-        maps::grid::MLSMapPrecalculated mlsPrec = mlsSloped;
-        mlsItem->setData(mlsPrec);
-        //mlsIn >> mlsItem->getData();
-        QApplication app(argc, argv);
-        EnvireVisualizerWindow window;
-        graph->addFrame(MLS_FRAME_NAME);
-        graph->addItemToFrame(MLS_FRAME_NAME, mlsItem);
-        envire::core::Transform mlsCenter(base::Position(0.0, 0.0, 0.0), Eigen::Quaterniond::Identity());
-        graph->addTransform(MLS_FRAME_NAME, CENTER_FRAME_NAME, mlsCenter);
-        QString qCentreName = QString::fromStdString(CENTER_FRAME_NAME);
-        window.displayGraph(graph, qCentreName);
-        window.show();
-        // Find out the frames which contain a collidablem put them in a vector and pass it to the callback
-        std::vector<envire::core::FrameId> colFrames;
-        envire::core::EnvireGraph::vertex_iterator  it, end;
-        std::tie(it, end) = graph->getVertices();
-        for(; it != end; ++it)
-        {
-            // See if the vertex has collision objects
-            IterCollItem itCols, endCols;
-            std::tie(itCols, endCols) = graph->getItems<CollisionItem>(*it);
-            if(itCols != endCols)
-            {
-                envire::core::FrameId colFrame = graph->getFrameId(*it);
-                colFrames.push_back(colFrame);
-                std::cout << "Collision items found in frame " << colFrame << std::endl;
-            }
-        }
-        EdgeCallBack * callBack = new EdgeCallBack(*graph, colFrames, mlsItem->getData());
-        graph->subscribe(callBack);
-        app.exec();
-    }
-    else
-    {
-        std::cout << "Only deserialization of sloped mls is supported";
-    }
-    */
 }

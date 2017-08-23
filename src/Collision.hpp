@@ -3,6 +3,8 @@
 #include <maps/grid/MLSMap.hpp>
 #include <smurf/Collidable.hpp>
 
+//#define DEBUG 1
+
 typedef std::shared_ptr<fcl::CollisionGeometry<float> > GeoPtr;
 typedef maps::grid::MLSMapSloped MLSMapS;
 typedef maps::grid::MLSMapPrecalculated MLSMapP;
@@ -25,7 +27,9 @@ void collide_mls(
     // compute bounding volume of o2 relative to mls map
     AABB<S> bv2;
     computeBV(*o2, shape2map, bv2);
+#ifdef DEBUG
     std::cout << "world2map:\n" << world2map.matrix() << "\nshape2map:\n" << shape2map.matrix() << "\nBV: [" << bv2.min_.transpose() << "] - [" << bv2.max_.transpose() << "]\n";
+#endif
 
     typedef fcl::AABB<S> BV;
     typedef maps::grid::MLSMapSloped::Patch P;
@@ -39,7 +43,9 @@ void collide_mls(
     //estimate number of cells:
     size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().cast<S>())).prod();
     Eigen::Vector2f cell_size = mls.getResolution().cast<float>();
+#ifdef DEBUG
     std::cout << "num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << "\n";
+#endif
     m1.beginModel(2*num_cells, 4*num_cells); // assume that each cell creates one 4-gon on average
     Eigen::AlignedBox3d bounding(bv2.min_.template cast<double>(), bv2.max_.template cast<double>());
     mls.intersectAABB_callback(bounding,
@@ -57,7 +63,9 @@ void collide_mls(
         return;
     }
     m1.endModel();
+#ifdef DEBUG
     std::cout << "Number of triangles: " << m1.num_tris << "\n";
+#endif
     // perform actual fcl-collision test:
     fcl::collide(&m1, world2map.inverse(Eigen::Isometry), o2, tf2, request, result);
 }
@@ -80,7 +88,9 @@ void collide_mls(
     // compute bounding volume of o2 relative to mls map
     AABB<S> bv2;
     computeBV(*o2, shape2map, bv2);
+#ifdef DEBUG
     std::cout << "world2map:\n" << world2map.matrix() << "\nshape2map:\n" << shape2map.matrix() << "\nBV: [" << bv2.min_.transpose() << "] - [" << bv2.max_.transpose() << "]\n";
+#endif
 
     typedef fcl::AABB<S> BV;
     typedef maps::grid::MLSMapPrecalculated::Patch P;
@@ -94,7 +104,9 @@ void collide_mls(
     //estimate number of cells:
     size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().cast<S>())).prod();
     Eigen::Vector2f cell_size = mls.getResolution().cast<float>();
+#ifdef DEBUG
     std::cout << "num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << "\n";
+#endif
     m1.beginModel(2*num_cells, 4*num_cells); // assume that each cell creates one 4-gon on average
     Eigen::AlignedBox3d bounding(bv2.min_.template cast<double>(), bv2.max_.template cast<double>());
     mls.intersectAABB_callback(bounding,
@@ -112,7 +124,9 @@ void collide_mls(
         return;
     }
     m1.endModel();
+#ifdef DEBUG
     std::cout << "Number of triangles: " << m1.num_tris << "\n";
+#endif
     // perform actual fcl-collision test:
     fcl::collide(&m1, world2map.inverse(Eigen::Isometry), o2, tf2, request, result);
 }
