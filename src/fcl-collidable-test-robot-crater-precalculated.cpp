@@ -58,31 +58,32 @@ public:
          * which have a collision object and computes whether collision with
          * the MLS takes place or not.
          */
-        smurf::Collidable collidable;
-        IterCollItem itCols, endCols;
+        int countCollisions = 0;
         for(unsigned int frameIndex = 0; frameIndex<colFrames_.size(); ++frameIndex)
         {
-            itCols = graph_.getItem<CollisionItem>(colFrames_[frameIndex]); 
-            std::string output;
 #ifdef DEBUG
             std::cout << "Collision related to frame " << colFrames_[frameIndex] << std::endl;
 #endif
-            collidable = itCols->getData();
             // Transformation must be from the mls frame to the colision object frame
             envire::core::Transform tfColCen = graph_.getTransform(MLS_FRAME_NAME, colFrames_[frameIndex]);
             fcl::Transform3f trafo = tfColCen.transform.getTransform().cast<float>();
-#ifdef DEBUG
+#ifdef DEBUG_TRAFO
             std::cout << "Edge modified. Trafo=\n" << std::endl;
             std::cout << tfColCen.transform.getTransform().matrix() << std::endl;
 #endif
+            // Get the collision object
+            IterCollItem itCols;
+            itCols = graph_.getItem<CollisionItem>(colFrames_[frameIndex]); 
+            smurf::Collidable collidable = itCols->getData();
+            urdf::Collision collision = collidable.getCollision();
+            // Prepare the fcl call
             fcl::CollisionRequestf request(10, true, 10, true);
             fcl::CollisionResultf result;
-            urdf::Collision collision = collidable.getCollision();
             bool collisionComputed = true;
             switch (collision.geometry->type){
                 case urdf::Geometry::SPHERE:
                     {
-#ifdef DEBUG
+#ifdef DEBUG_GEOMETRY
                         std::cout << "Collision with a sphere" << std::endl;
 #endif
                         boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
@@ -92,7 +93,8 @@ public:
                     }
                 case urdf::Geometry::BOX:
                     {
-#ifdef DEBUG
+#ifdef DEBUG_GEOMETRY
+
                         std::cout << "Collision with a box" << std::endl;
 #endif
                         boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
@@ -109,25 +111,23 @@ public:
             if (collisionComputed)
             {
 #ifdef DEBUG
-                std::cout << "\nisCollision()==" << result.isCollision();
-#endif
+                std::cout << "\nisCollision()==" << result.isCollision() << std::endl;
+                if (result.isCollision())
+                {
+                    countCollisions ++;
+                    std::cout << "\n Collision detected related to frame " << colFrames_[frameIndex] << std::endl;
+                }
                 for(size_t i=0; i< result.numContacts(); ++i)
                 {
                     const auto & cont = result.getContact(i);
-                    std::cout << "Collision detected related to frame " << colFrames_[frameIndex] << std::endl;
-                    std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth;
-                }
-#ifdef DEBUG
-                std::cout << std::endl;
-                if (result.isCollision())
-                {
-                    std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" << std::endl;
+                    std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth << std::endl;
                 }
 #endif
             }
         }
 #ifdef DEBUG
-        std::cout << "EDGE CALLBACK FINISHED" << std::endl;
+        std::cout << "Total collisions found " << countCollisions << std::endl; 
+        std::cout << "EDGE CALLBACK FINISHED " << std::endl;
 #endif
     }
 };
