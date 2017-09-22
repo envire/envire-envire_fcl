@@ -5,20 +5,20 @@
     <link name="sphere">
       <inertial>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
-        <mass value="1.121"/>
+        <mass value="5.121"/>
         <inertia ixx="0.004046" ixy="0.000314" ixz="5.7e-05" iyy="0.002621" iyz="-4.8e-05" izz="0.004502"/>
       </inertial>
       <visual name="visual_sphere">
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-          <sphere radius="0.5"/>
+          <sphere radius="0.05"/>
         </geometry>
         <material name="schwarz"/>
       </visual>
       <collision name="collision_sphere">
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-          <sphere radius="0.5"/>
+          <sphere radius="0.05"/>
         </geometry>
       </collision>
     </link>
