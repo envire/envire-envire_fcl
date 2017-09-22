@@ -37,6 +37,7 @@
 
 #define DUMPED_MLS_FRAME_NAME std::string("mls_map")
 #define TEST_MLS_PATH std::string("/simulation/mars/plugins/envire_mls/testMlsData/crater_simulation_mls.graph")
+#define TEST_MLS_PATH std::string("/envire/envire_fcl/src/mls/crater_simulation_mls.graph")
 
 #define DEBUG 1
 
