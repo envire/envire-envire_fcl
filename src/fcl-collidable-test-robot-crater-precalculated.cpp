@@ -24,7 +24,7 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-#include <envire_core/graph/GraphViz.hpp>
+//#include <envire_core/graph/GraphViz.hpp>
 
 #include <Eigen/Geometry>
 
@@ -89,7 +89,7 @@ public:
 #ifdef DEBUG_GEOMETRY
                         std::cout << "Collision with a sphere" << std::endl;
 #endif
-                        boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
+                        urdf::SphereSharedPtr sphereUrdf = urdf::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
                         fcl::Spheref sphere(sphereUrdf->radius);
                         fcl::collide_mls(mls_, trafo, &sphere, request, result);
                         break;
@@ -100,7 +100,7 @@ public:
 
                         std::cout << "Collision with a box" << std::endl;
 #endif
-                        boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
+                        urdf::BoxSharedPtr boxUrdf = urdf::dynamic_pointer_cast<urdf::Box>(collision.geometry);
                         fcl::Boxf box(boxUrdf->dim.x, boxUrdf->dim.y, boxUrdf->dim.z);
                         fcl::collide_mls(mls_, trafo, &box, request, result);
                         break;

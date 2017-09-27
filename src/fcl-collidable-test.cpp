@@ -24,7 +24,7 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-#include <envire_core/graph/GraphViz.hpp>
+#include <envire_core/graph/GraphDrawing.hpp>
 
 #include <Eigen/Geometry>
 
@@ -67,7 +67,8 @@ public:
         //boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
         //fcl::Spheref sphere(sphereUrdf->radius);
 
-        boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
+        //boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
+        urdf::BoxSharedPtr boxUrdf = urdf::dynamic_pointer_cast<urdf::Box>(collision.geometry);
         fcl::Boxf box(boxUrdf->dim.x, boxUrdf->dim.y, boxUrdf->dim.z);
 
         //fcl::Spheref sphere(.25); // Build an sphere out of the collidable
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
     
-    envire::core::GraphViz viz;
+    envire::core::GraphDrawing viz;
 
     envire::core::Transform iniPose;
     std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph) ;
@@ -112,7 +113,7 @@ int main(int argc, char **argv) {
     int nextGroupId = 0;
     graphLoader.loadFrames(nextGroupId, *robot);
     graphLoader.loadCollidables(*robot);
-    //graphLoader.loadVisuals(*robot);
+    graphLoader.loadVisuals(*robot);
     viz.write(*(graphLoader.getGraph()), "fcl-collidable-test.dot");
     
     // Load the mls

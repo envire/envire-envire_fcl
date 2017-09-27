@@ -24,7 +24,7 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-#include <envire_core/graph/GraphViz.hpp>
+//#include <envire_core/graph/GraphViz.hpp>
 
 #include <Eigen/Geometry>
 

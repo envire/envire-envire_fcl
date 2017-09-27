@@ -24,7 +24,7 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-#include <envire_core/graph/GraphViz.hpp>
+#include <envire_core/graph/GraphDrawing.hpp>
 
 #include <Eigen/Geometry>
 
@@ -63,7 +63,7 @@ public:
         fcl::CollisionResultf result;
         urdf::Collision collision = collidable.getCollision();
 
-        boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
+        urdf::SphereSharedPtr sphereUrdf = urdf::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
         fcl::Spheref sphere(sphereUrdf->radius);
 
         fcl::collide_mls(mls_, trafo, &sphere, request, result);
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
     
-    envire::core::GraphViz viz;
+    envire::core::GraphDrawing viz;
 
     envire::core::Transform iniPose;
     std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph) ;

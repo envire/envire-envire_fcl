@@ -35,60 +35,60 @@ rock_executable(fcl_collidable_test fcl-collidable-test.cpp
          envire_smurf
 )
 
-rock_executable(fcl_collidable_test_sphere fcl-collidable-test-sphere.cpp
-   DEPS envire_fcl
-   DEPS_PKGCONFIG
-       octomap boost_serialization
-         maps-viz base-viz
-         envire_core
-         envire_visualizer
-         envire_maps
-         envire_smurf
-)
-
-rock_executable(fcl_collidable_test_multiple_objects fcl-collidable-test-multiple-objects.cpp
-   DEPS envire_fcl
-   DEPS_PKGCONFIG
-       octomap boost_serialization
-         maps-viz base-viz
-         envire_core
-         envire_visualizer
-         envire_maps
-         envire_smurf
-)
-
-rock_executable(fcl_collidable_test_robot fcl-collidable-test-robot.cpp
-   DEPS envire_fcl
-   DEPS_PKGCONFIG
-       octomap boost_serialization
-         maps-viz base-viz
-         envire_core
-         envire_visualizer
-         envire_maps
-         envire_smurf
-)
-
-rock_executable(fcl_collidable_test_robot_precalculated fcl-collidable-test-robot-precalculated.cpp
-   DEPS envire_fcl
-   DEPS_PKGCONFIG
-       octomap boost_serialization
-         maps-viz base-viz
-         envire_core
-         envire_visualizer
-         envire_maps
-         envire_smurf
-)
-
-rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-test-robot-crater-precalculated.cpp
-   DEPS envire_fcl
-   DEPS_PKGCONFIG
-       octomap boost_serialization
-         maps-viz base-viz
-         envire_core
-         envire_visualizer
-         envire_maps
-         envire_smurf
-)
+#rock_executable(fcl_collidable_test_sphere fcl-collidable-test-sphere.cpp
+#   DEPS envire_fcl
+#   DEPS_PKGCONFIG
+#       octomap boost_serialization
+#         maps-viz base-viz
+#         envire_core
+#         envire_visualizer
+#         envire_maps
+#         envire_smurf
+#)
+#
+#rock_executable(fcl_collidable_test_multiple_objects fcl-collidable-test-multiple-objects.cpp
+#   DEPS envire_fcl
+#   DEPS_PKGCONFIG
+#       octomap boost_serialization
+#         maps-viz base-viz
+#         envire_core
+#         envire_visualizer
+#         envire_maps
+#         envire_smurf
+#)
+#
+#rock_executable(fcl_collidable_test_robot fcl-collidable-test-robot.cpp
+#   DEPS envire_fcl
+#   DEPS_PKGCONFIG
+#       octomap boost_serialization
+#         maps-viz base-viz
+#         envire_core
+#         envire_visualizer
+#         envire_maps
+#         envire_smurf
+#)
+#
+#rock_executable(fcl_collidable_test_robot_precalculated fcl-collidable-test-robot-precalculated.cpp
+#   DEPS envire_fcl
+#   DEPS_PKGCONFIG
+#       octomap boost_serialization
+#         maps-viz base-viz
+#         envire_core
+#         envire_visualizer
+#         envire_maps
+#         envire_smurf
+#)
+#
+#rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-test-robot-crater-precalculated.cpp
+#   DEPS envire_fcl
+#   DEPS_PKGCONFIG
+#       octomap boost_serialization
+#         maps-viz base-viz
+#         envire_core
+#         envire_visualizer
+#         envire_maps
+#         envire_smurf
+#)
 
 file(COPY smurf DESTINATION ./)
 
