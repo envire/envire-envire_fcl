@@ -88,6 +88,8 @@ rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-te
          envire_visualizer
          envire_maps
          envire_smurf
+         envire_smurf_collidable_vis
+         envire_smurf_visual_vis
 )
 
 file(COPY smurf DESTINATION ./)
