@@ -68,16 +68,16 @@ rock_executable(fcl_collidable_test fcl-collidable-test.cpp
 #         envire_smurf
 #)
 #
-#rock_executable(fcl_collidable_test_robot_precalculated fcl-collidable-test-robot-precalculated.cpp
-#   DEPS envire_fcl
-#   DEPS_PKGCONFIG
-#       octomap boost_serialization
-#         maps-viz base-viz
-#         envire_core
-#         envire_visualizer
-#         envire_maps
-#         envire_smurf
-#)
+rock_executable(fcl_collidable_test_robot_precalculated fcl-collidable-test-robot-precalculated.cpp
+   DEPS envire_fcl
+   DEPS_PKGCONFIG
+       octomap boost_serialization
+         maps-viz base-viz
+         envire_core
+         envire_visualizer
+         envire_maps
+         envire_smurf
+)
 #
 #rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-test-robot-crater-precalculated.cpp
 #   DEPS envire_fcl

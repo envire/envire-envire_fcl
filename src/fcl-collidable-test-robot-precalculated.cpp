@@ -24,7 +24,7 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-//#include <envire_core/graph/GraphViz.hpp>
+#include <envire_core/graph/GraphDrawing.hpp>
 
 #include <Eigen/Geometry>
 
@@ -73,7 +73,7 @@ public:
                 case urdf::Geometry::SPHERE:
                     {
                         std::cout << "Collision with a sphere" << std::endl;
-                        boost::shared_ptr<urdf::Sphere> sphereUrdf = boost::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
+                        urdf::SphereSharedPtr sphereUrdf = urdf::dynamic_pointer_cast<urdf::Sphere>(collision.geometry);
                         fcl::Spheref sphere(sphereUrdf->radius);
                         fcl::collide_mls(mls_, trafo, &sphere, request, result);
                         break;
@@ -81,7 +81,7 @@ public:
                 case urdf::Geometry::BOX:
                     {
                         std::cout << "Collision with a box" << std::endl;
-                        boost::shared_ptr<urdf::Box> boxUrdf = boost::dynamic_pointer_cast<urdf::Box>(collision.geometry);
+                        urdf::BoxSharedPtr boxUrdf = urdf::dynamic_pointer_cast<urdf::Box>(collision.geometry);
                         fcl::Boxf box(boxUrdf->dim.x, boxUrdf->dim.y, boxUrdf->dim.z);
                         fcl::collide_mls(mls_, trafo, &box, request, result);
                         break;
@@ -110,7 +110,7 @@ int main(int argc, char **argv) {
     const std::string path = std::getenv(ENV_AUTOPROJ_ROOT) + ASGUARD_PATH;
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
-    envire::core::GraphViz viz;
+    envire::core::GraphDrawing viz;
     envire::core::Transform iniPose;
 
     std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph) ;
