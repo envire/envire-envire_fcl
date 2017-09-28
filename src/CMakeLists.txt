@@ -78,17 +78,17 @@ rock_executable(fcl_collidable_test_robot_precalculated fcl-collidable-test-robo
          envire_maps
          envire_smurf
 )
-#
-#rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-test-robot-crater-precalculated.cpp
-#   DEPS envire_fcl
-#   DEPS_PKGCONFIG
-#       octomap boost_serialization
-#         maps-viz base-viz
-#         envire_core
-#         envire_visualizer
-#         envire_maps
-#         envire_smurf
-#)
+
+rock_executable(fcl_collidable_test_robot_crater_precalculated fcl-collidable-test-robot-crater-precalculated.cpp
+   DEPS envire_fcl
+   DEPS_PKGCONFIG
+       octomap boost_serialization
+         maps-viz base-viz
+         envire_core
+         envire_visualizer
+         envire_maps
+         envire_smurf
+)
 
 file(COPY smurf DESTINATION ./)
 

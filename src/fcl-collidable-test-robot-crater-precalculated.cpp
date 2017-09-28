@@ -24,16 +24,16 @@
 #include <vizkit3d/QtThreadedWidget.hpp>
 #include <plugin_manager/PluginLoader.hpp>
 
-//#include <envire_core/graph/GraphViz.hpp>
+#include <envire_core/graph/GraphDrawing.hpp>
 
 #include <Eigen/Geometry>
 
 #define CENTER_FRAME_NAME std::string("center")
 #define MLS_FRAME_NAME std::string("MLS Frame")
 #define ENV_AUTOPROJ_ROOT "AUTOPROJ_CURRENT_ROOT"
-//#define ASGUARD_PATH std::string("/models/robots/asguard_v4/smurf/asguard_v4.smurf")
+#define ASGUARD_PATH std::string("/models/robots/asguard_v4/smurf/asguard_v4.smurf")
 //#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_box/smurf/just_a_box.smurf")
-#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_sphere/smurf/just_a_sphere.smurf")
+//#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_sphere/smurf/just_a_sphere.smurf")
 
 #define DUMPED_MLS_FRAME_NAME std::string("mls_map")
 #define TEST_MLS_PATH std::string("/simulation/mars/plugins/envire_mls/testMlsData/crater_simulation_mls.graph")
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
     const std::string path = std::getenv(ENV_AUTOPROJ_ROOT) + ASGUARD_PATH;
     smurf::Robot* robot = new(smurf::Robot);
     robot->loadFromSmurf(path);
-    envire::core::GraphViz viz;
+    envire::core::GraphDrawing viz;
     envire::core::Transform iniPose;
 
     std::shared_ptr<envire::core::EnvireGraph> graph(new envire::core::EnvireGraph) ;
@@ -158,6 +158,7 @@ int main(int argc, char **argv) {
     int nextGroupId = 0;
     graphLoader.loadFrames(nextGroupId, *robot);
     graphLoader.loadCollidables(*robot);
+    graphLoader.loadVisuals(*robot);
     viz.write(*(graphLoader.getGraph()), "fcl-collidable-test-robot-precalculated.dot");
     
     // Load the mls
