@@ -27,15 +27,16 @@
 #include "fcl-extern.hpp"
 
 #include <maps/grid/MLSMap.hpp>
+#include <maps/grid/MLSConfig.hpp>
 
 typedef std::shared_ptr<fcl::CollisionGeometry<float> > GeoPtr;
 typedef maps::grid::MLSMapSloped MLSMapS;
 
 namespace fcl {
 
-template<class Shape, class S>
+template<class Shape, class S, enum maps::grid::MLSConfig::update_model SurfaceType>
 void collide_mls(
-        const maps::grid::MLSMapSloped& mls,
+        const maps::grid::MLSMap<SurfaceType>& mls,
         const Transform3<S>& tf2,
         const Shape* o2,
         const CollisionRequest<S>& request,
@@ -43,7 +44,7 @@ void collide_mls(
 )
 {
     // FIXME Local frame of MLS is slightly annoying here ...
-    const Transform3<S> world2map = mls.getLocalFrame().cast<S>();
+    const Transform3<S> world2map = mls.getLocalFrame().template cast<S>();
     const Transform3<S> shape2map = world2map * tf2;
 
     // compute bounding volume of o2 relative to mls map
@@ -52,7 +53,7 @@ void collide_mls(
     std::cout << "world2map:\n" << world2map.matrix() << "\nshape2map:\n" << shape2map.matrix() << "\nBV: [" << bv2.min_.transpose() << "] - [" << bv2.max_.transpose() << "]\n";
 
     typedef fcl::AABB<S> BV;
-    typedef maps::grid::MLSMapSloped::Patch P;
+    typedef typename maps::grid::MLSMap<SurfaceType>::Patch P;
 
     typedef std::vector<fcl::Triangle> TriVect;
     static fcl::Triangle triags[4];
@@ -61,8 +62,8 @@ void collide_mls(
     // TODO check out if different a bv_splitter makes a difference:
     // m1.bv_splitter.reset(new fcl::detail::BVSplitter<BV>(fcl::detail::SPLIT_METHOD_MEDIAN);
     //estimate number of cells:
-    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().cast<S>())).prod();
-    Eigen::Vector2f cell_size = mls.getResolution().cast<float>();
+    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().template cast<S>())).prod();
+    Eigen::Vector2f cell_size = mls.getResolution().template cast<float>();
     std::cout << "num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << "\n";
     m1.beginModel(2*num_cells, 4*num_cells); // assume that each cell creates one 4-gon on average
     Eigen::AlignedBox3d bounding(bv2.min_.template cast<double>(), bv2.max_.template cast<double>());
