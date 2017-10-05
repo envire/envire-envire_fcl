@@ -117,12 +117,13 @@ public:
                 std::cout << "\nisCollision()==" << result.isCollision() << std::endl;
                 if (result.isCollision())
                 {
-                    countCollisions ++;
+                    countCollisions += result.numContacts();
                     std::cout << "\n Collision detected related to frame " << colFrames_[frameIndex] << std::endl;
                 }
                 for(size_t i=0; i< result.numContacts(); ++i)
                 {
                     const auto & cont = result.getContact(i);
+
                     std::cout << "\n" << cont.pos.transpose() << "; " << cont.normal.transpose() << "; " << cont.penetration_depth << std::endl;
                 }
 #endif
