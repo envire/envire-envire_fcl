@@ -96,7 +96,7 @@ void collide_mls(
     fcl::collide(&m1, world2map.inverse(Eigen::Isometry), o2, tf2, request, result);
 }
 
-// Do not recompile this function every time:
+// Do not recompile these functions every time:
 
 extern template void collide_mls(
         const maps::grid::MLSMapSloped& mls,
@@ -105,6 +105,31 @@ extern template void collide_mls(
         const CollisionRequest<float>& request,
         CollisionResult<float>& result
 );
+
+extern template void collide_mls(
+        const maps::grid::MLSMapSloped& mls,
+        const Transform3<float>& tf2,
+        const fcl::Boxf* o2,
+        const CollisionRequest<float>& request,
+        CollisionResult<float>& result
+);
+
+extern template void collide_mls(
+        const maps::grid::MLSMapPrecalculated& mls,
+        const Transform3<float>& tf2,
+        const fcl::Spheref* o2,
+        const CollisionRequest<float>& request,
+        CollisionResult<float>& result
+);
+
+extern template void collide_mls(
+        const maps::grid::MLSMapPrecalculated& mls,
+        const Transform3<float>& tf2,
+        const fcl::Boxf* o2,
+        const CollisionRequest<float>& request,
+        CollisionResult<float>& result
+);
+
 
 template<class Shape, class S>
 void collide_collidable(
