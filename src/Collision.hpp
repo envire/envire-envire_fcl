@@ -1,3 +1,29 @@
+//
+// Copyright (c) 2015, Deutsches Forschungszentrum für Künstliche Intelligenz GmbH.
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// * Redistributions of source code must retain the above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// * Redistributions in binary form must reproduce the above copyright notice,
+//   this list of conditions and the following disclaimer in the documentation
+//   and/or other materials provided with the distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
 #include "fcl-extern.hpp"
 
 #include <maps/grid/MLSMap.hpp>
@@ -11,9 +37,9 @@ typedef maps::grid::MLSMapPrecalculated MLSMapP;
 
 namespace fcl {
 
-template<class Shape, class S>
+template<class Shape, class S, enum maps::grid::MLSConfig::update_model SurfaceType>
 void collide_mls(
-        const maps::grid::MLSMapSloped& mls,
+        const maps::grid::MLSMap<SurfaceType>& mls,
         const Transform3<S>& tf2,
         const Shape* o2,
         const CollisionRequest<S>& request,
@@ -21,7 +47,7 @@ void collide_mls(
 )
 {
     // FIXME Local frame of MLS is slightly annoying here ...
-    const Transform3<S> world2map = mls.getLocalFrame().cast<S>();
+    const Transform3<S> world2map = mls.getLocalFrame().template cast<S>();
     const Transform3<S> shape2map = world2map * tf2;
 
     // compute bounding volume of o2 relative to mls map
@@ -32,7 +58,7 @@ void collide_mls(
 #endif
 
     typedef fcl::AABB<S> BV;
-    typedef maps::grid::MLSMapSloped::Patch P;
+    typedef typename maps::grid::MLSMap<SurfaceType>::Patch P;
 
     typedef std::vector<fcl::Triangle> TriVect;
     static fcl::Triangle triags[4];
@@ -41,8 +67,8 @@ void collide_mls(
     // TODO check out if different a bv_splitter makes a difference:
     // m1.bv_splitter.reset(new fcl::detail::BVSplitter<BV>(fcl::detail::SPLIT_METHOD_MEDIAN);
     //estimate number of cells:
-    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().cast<S>())).prod();
-    Eigen::Vector2f cell_size = mls.getResolution().cast<float>();
+    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().template cast<S>())).prod();
+    Eigen::Vector2f cell_size = mls.getResolution().template cast<float>();
 #ifdef DEBUG
     std::cout << "num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << "\n";
 #endif
