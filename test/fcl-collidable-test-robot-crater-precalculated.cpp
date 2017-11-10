@@ -31,9 +31,9 @@
 #define CENTER_FRAME_NAME std::string("center")
 #define MLS_FRAME_NAME std::string("MLS Frame")
 #define ENV_AUTOPROJ_ROOT "AUTOPROJ_CURRENT_ROOT"
-#define ASGUARD_PATH std::string("/models/robots/asguard_v4/smurf/asguard_v4.smurf")
+//#define ASGUARD_PATH std::string("/models/robots/asguard_v4/smurf/asguard_v4.smurf")
 //#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_box/smurf/just_a_box.smurf")
-//#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_sphere/smurf/just_a_sphere.smurf")
+#define ASGUARD_PATH std::string("/envire/envire_fcl/src/smurf/just_a_sphere/smurf/just_a_sphere.smurf")
 
 #define DUMPED_MLS_FRAME_NAME std::string("mls_map")
 #define TEST_MLS_PATH std::string("/simulation/mars/plugins/envire_mls/testMlsData/crater_simulation_mls.graph")
