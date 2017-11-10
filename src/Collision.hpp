@@ -54,7 +54,7 @@ void collide_mls(
     AABB<S> bv2;
     computeBV(*o2, shape2map, bv2);
 #ifdef DEBUG
-    std::cout << "world2map:\n" << world2map.matrix() << "\nshape2map:\n" << shape2map.matrix() << "\nBV: [" << bv2.min_.transpose() << "] - [" << bv2.max_.transpose() << "]\n";
+    std::cout << "[envire_fcl::collide_mls] world2map:\n" << world2map.matrix() << "\nshape2map:\n" << shape2map.matrix() << "\nBV: [" << bv2.min_.transpose() << "] - [" << bv2.max_.transpose() << "]" << std::endl;
 #endif
 
     typedef fcl::AABB<S> BV;
@@ -67,10 +67,11 @@ void collide_mls(
     // TODO check out if different a bv_splitter makes a difference:
     // m1.bv_splitter.reset(new fcl::detail::BVSplitter<BV>(fcl::detail::SPLIT_METHOD_MEDIAN);
     //estimate number of cells:
-    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().template cast<S>())).prod();
+    size_t num_cells = ((bv2.max_ - bv2.min_).template head<2>().cwiseQuotient(mls.getResolution().template cast<S>()).array().ceil()).prod();
     Eigen::Vector2f cell_size = mls.getResolution().template cast<float>();
 #ifdef DEBUG
-    std::cout << "num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << "\n";
+    std::cout << "[envire_fcl::collide_mls] world2map:num_cells: " << num_cells << ", cell_size: " << cell_size.transpose() << std::endl;
+
 #endif
     m1.beginModel(2*num_cells, 4*num_cells); // assume that each cell creates one 4-gon on average
     Eigen::AlignedBox3d bounding(bv2.min_.template cast<double>(), bv2.max_.template cast<double>());
@@ -78,6 +79,11 @@ void collide_mls(
             [&m1, &cell_size](maps::grid::Index idx, const P& p) {
         std::vector<Eigen::Vector3f> points;
         maps::grid::getPolygon(points, p, idx, cell_size);
+        if(points.size() < 3)
+        {
+            std::cerr << "[envire_fcl::collide_mls] No intersection of patch with box\n";
+            return false;
+        }
         assert(points.size()>=3 && points.size() <=6);
         m1.addSubModel(points, TriVect(triags, triags+(points.size()-2)));
         // return false, because we need to add every possible intersection:
@@ -90,7 +96,7 @@ void collide_mls(
     }
     m1.endModel();
 #ifdef DEBUG
-    std::cout << "Number of triangles: " << m1.num_tris << "\n";
+    std::cout << "[envire_fcl::collide_mls] Number of triangles: " << m1.num_tris << std::endl;
 #endif
     // perform actual fcl-collision test:
     fcl::collide(&m1, world2map.inverse(Eigen::Isometry), o2, tf2, request, result);
