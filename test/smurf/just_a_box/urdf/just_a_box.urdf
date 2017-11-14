@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+  <robot name="just_a_box">
+
+    
+    <link name="box">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="1.121"/>
+        <inertia ixx="0.004046" ixy="0.000314" ixz="5.7e-05" iyy="0.002621" iyz="-4.8e-05" izz="0.004502"/>
+      </inertial>
+      <visual name="visual_box">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+            <box size="1.0 1.0 1.0"/>
+        </geometry>
+        <material name="schwarz"/>
+      </visual>
+      <collision name="collision_box">
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="1.0 1.0 1.0"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <material name="green">
+      <color rgba="0.35884 0.343867 0.208525 1.0"/>
+    </material>
+
+    <material name="schwarz">
+      <color rgba="0.00637 0.00637 0.00637 1.0"/>
+    </material>
+
+    <material name="silber">
+      <color rgba="0.422167 0.422167 0.422167 1.0"/>
+    </material>
+
+  </robot>

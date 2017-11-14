@@ -1,0 +1,7 @@
+SMURF version: 0.6
+modelname: two_boxes_with_motor_joint
+date: '20150617_17:34'
+files:
+- ../urdf/two_boxes_dynamic_joint.urdf
+- two_boxes_with_motor_motors.yml
+- two_boxes_task.yml

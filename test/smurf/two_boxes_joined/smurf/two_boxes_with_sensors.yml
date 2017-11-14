@@ -1,0 +1,60 @@
+#sensors definition SMURF file for "TwoBoxes", 20150407_15:47
+
+sensors:
+#- bands: 16
+#  draw_rays: 0
+#  horizontal_offset: 0
+#  horizontal_resolution: 0.002
+#  lasers: 32
+#  link: box
+#  maxDistance: 80.0
+#  name: velodyne
+#  type: RotatingRaySensor
+#  vertical_offset: 0.186227
+- id:
+  - main_body
+  link: box
+  name: COM
+  type: NodeCOM
+#- height: 100
+#  link: box
+#  maxDistance: 5.0
+#  name: hokuyo
+#  opening_height: 3.14
+#  opening_width: 3.14
+#  type: RaySensor
+#  width: 100
+#  draw_rays: 0
+#- depthImage: 1
+#  height: 0
+#  hud_height: 0
+#  hud_pos: 0
+#  hud_width: 0
+#  link: box
+#  name: swiss_ranger
+#  opening_height: 90.0
+#  opening_width: 90.0
+#  show_cam: 0
+#  type: CameraSensor
+#  width: 0
+
+#- id:
+#  - root
+#  link: box
+#  name: bodyPosition
+#  type: NodePosition
+#- id:
+#  - root
+#  link: box
+#  name: bodyRotation
+#  type: NodeRotation
+#- id:
+#  - collision_leg0_foot
+#  link: box
+#  name: footForce0
+#  type: NodeContactForce
+#- id:
+#  - box
+#  link: box
+#  name: jointPosition
+#  type: JointPosition

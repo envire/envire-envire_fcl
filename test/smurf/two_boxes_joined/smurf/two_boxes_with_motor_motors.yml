@@ -1,0 +1,11 @@
+motors:
+- d: 0
+  i: 0
+  joint: box2
+  maxEffort: 30.0
+  maxSpeed: 6.283185
+  maxValue: 6.283185
+  minValue: 0
+  name: box2
+  p: 20.0
+  type: DC
