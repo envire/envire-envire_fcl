@@ -7,6 +7,7 @@ rock_library(envire_fcl
       Collision.hpp
     DEPS_PKGCONFIG
         envire_maps
+        smurf
         fcl
         ccd
     )
