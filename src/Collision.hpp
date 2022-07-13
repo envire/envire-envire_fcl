@@ -49,7 +49,8 @@ void collide_mls(
 )
 {
     // FIXME Local frame of MLS is slightly annoying here ...
-    const Transform3<S> world2map = mls.getLocalFrame().template cast<S>();
+    // explicitly convert content of mls.getLocalFrame() to an Isometry. It would be nicer if localFrame was already an Isometry.
+    const Transform3<S> world2map{mls.getLocalFrame().template cast<S>().matrix()};
     const Transform3<S> shape2map = world2map * tf2;
 
     // compute bounding volume of o2 relative to mls map
