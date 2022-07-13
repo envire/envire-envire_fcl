@@ -24,6 +24,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#pragma once
 #pragma GCC diagnostic push
 // disable 'has virtual functions and accessible non-virtual destructor' warnings inside fcl:
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
